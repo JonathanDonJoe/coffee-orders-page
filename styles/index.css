@@ -1,0 +1,30 @@
+:root {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+body {
+    width: 100vw;
+    height:100vh;
+    margin: 0 auto;
+}
+
+.content-section {
+    border: black solid 1px;
+    height: 100vh;
+    width: 30vw;
+}
+
+#order-container {
+    display:flex;
+    flex-direction: column;
+}
+
+.order {
+    border: black solid 1px;
+    list-style: none;
+    height:50px;
+    width:30vw;
+    padding: 4px;
+}
