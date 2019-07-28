@@ -5,15 +5,15 @@
     box-sizing: inherit;
 }
 body {
-    width: 100vw;
-    height:100vh;
-    margin: 0 auto;
+    width: 100%;
+    height:100%;
+    margin: 0;
 }
 
 .content-section {
-    border: black solid 1px;
-    height: 100vh;
-    width: 30vw;
+    /* border: black solid 1px; */
+    height: 100%;
+    /* width: 30%; */
 }
 
 #order-container {
@@ -21,10 +21,33 @@ body {
     flex-direction: column;
 }
 
+#order-details {
+    /* background-color:lightgreen; */
+    top:0;
+    position:fixed;
+    width:70%;
+    right:0;
+    height:100vh;
+}
+
 .order {
-    border: black solid 1px;
+    border: black solid 1px; 
     list-style: none;
     height:50px;
-    width:30vw;
+    width:30%;
     padding: 4px;
+}
+
+.order-details-h1 {
+    margin:0;
+    text-align: center;
+    font-size:30px;
+}
+
+
+.test {
+    /* border: black solid 1px; */
+    background: lightgray;
+    height:100%;
+    width:100%;
 }
