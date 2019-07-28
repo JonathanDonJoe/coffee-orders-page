@@ -44,10 +44,21 @@ body {
     font-size:30px;
 }
 
+.order-details-body {
+    padding:30px;
+}
 
-.test {
-    /* border: black solid 1px; */
+.order-details-h2 {
+    margin:0;
+    font-size:20px;
+}
+
+.details-text {
+    margin:0;
+}
+
+/* .test {
     background: lightgray;
     height:100%;
     width:100%;
-}
+} */

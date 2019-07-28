@@ -16,7 +16,7 @@ customersURL = 'http://my-little-cors-proxy.herokuapp.com/https://meanmom.jonath
 // Restructured orders to be {order.id:object} format
 function ordersById(jsonOrders) {
     const orderIdObject = {};
-    jsonOrders.results.forEach(order => orderIdObject[order.id] = order)
+    jsonOrders.results.forEach(order => orderIdObject[order.id] = order);
     return orderIdObject;
 }
 
@@ -40,7 +40,7 @@ function buildOrdersArray(orders) {
     for (order in orders){
         orderArray.push(order);
     }
-    return orderArray
+    return orderArray;
 }
 
 // Populate Orders List Container with orders
@@ -54,21 +54,46 @@ function fillOrdersContainer(orders, ordersById, customersById) {
 }
 
 // Populate the order details container
-function populateOrderDetails(event,orders, drinks, customers) {
+function populateOrderDetails(event, orders, drinks, customers) {
     // Delete any old order elements
     orderDetailsContainer.innerHTML = "";
 
+    // Information needed
+    const orderID = event.target.innerHTML.split(' ')[1];
+    const order = orders[orderID];
+    const customerID = order.customer_id;
+    const customer = customers[customerID];
+    const drinkID = order.drink_id;
+    const drink = drinks[drinkID]
+    // console.log(customerID);
+
+
     // Create a containing div for the order
     const section = document.createElement('section');
-    section.classList.add('test');  // Remove later.  For visuals
+    // section.classList.add('test');  
     orderDetailsContainer.appendChild(section);
 
     // Create Order Header
-    const orderID = event.target.innerHTML.split(' ')[1];
     const h1 = document.createElement('h1');
-    h1.classList.add('order-details-h1')
-    h1.innerHTML = `Order: ${orderID}`;
+    h1.classList.add('order-details-h1');
+    h1.innerHTML = `Order ID: ${orderID}`;
     section.appendChild(h1);
+
+    // Create body section
+    const details = document.createElement('div');
+    details.classList.add('order-details-body');
+    details.innerHTML = 
+        `
+        <h2 class='order-details-h2'><strong>Order: </strong></h2><br>
+        <p class='details-text'><strong>Order Time: </strong>${order.date}<br>
+        <strong>Drink: </strong>${drink.recipe}<br>
+        <strong>Size: </strong>${order.size}<br></p><br><br>
+        <h2 class='order-details-h2'><strong>Customer: </strong></h2><br>
+        <p class='details-text'><strong>Name: </strong>${customer.name}<br>
+        <strong>Email: </strong>${customer.email}<br>
+        <strong>Twitter: </strong>${customer.twitter}<br></p>
+        `;
+    section.append(details);
 }
 
 
@@ -88,14 +113,12 @@ async function fetchMyData() {
     const customersByIdObject = customerById(jsonifiedCustomers);
 
     // Populate Orders Container sidebar
-    const OrdersArray = buildOrdersArray(ordersByIdObject)
+    const OrdersArray = buildOrdersArray(ordersByIdObject);
     fillOrdersContainer(OrdersArray, ordersByIdObject, customersByIdObject);
 
     // Add event listener for clicking on orders
-    orderContainer.addEventListener('click', event => populateOrderDetails(event, ordersByIdObject, drinksByIdObject, customersByIdObject))
-
-    
+    orderContainer.addEventListener('click', event => populateOrderDetails(event, ordersByIdObject, drinksByIdObject, customersByIdObject));
 }
 
-fetchMyData()
+fetchMyData();
 
