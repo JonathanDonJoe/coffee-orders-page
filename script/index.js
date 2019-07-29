@@ -64,7 +64,7 @@ function populateOrderDetails(event, orders, drinks, customers) {
     const customerID = order.customer_id;
     const customer = customers[customerID];
     const drinkID = order.drink_id;
-    const drink = drinks[drinkID]
+    const drink = drinks[drinkID];
 
     // Create a containing div for the order
     const section = document.createElement('section');
@@ -81,11 +81,11 @@ function populateOrderDetails(event, orders, drinks, customers) {
     details.classList.add('order-details-body');
     details.innerHTML = 
         `
-        <h2 class='order-details-h2'><strong>Order: </strong></h2><br>
+        <h2 class='order-details-h2'><strong>Order Info: </strong></h2><br>
         <p class='details-text'><strong>Order Time: </strong>${order.date}<br>
         <strong>Size: </strong>${order.size}<br>
         <strong>Drink: </strong>${drink.recipe}<br></p><br><br>
-        <h2 class='order-details-h2'><strong>Customer: </strong></h2><br>
+        <h2 class='order-details-h2'><strong>Customer Info: </strong></h2><br>
         <p class='details-text'><strong>Name: </strong>${customer.name}<br>
         <strong>Email: </strong>${customer.email}<br>
         <strong>Twitter: </strong>${customer.twitter}<br></p>
@@ -93,36 +93,58 @@ function populateOrderDetails(event, orders, drinks, customers) {
     section.append(details);
 }
 
+// Store into local storage
 function storeLocalStorage(orders, drinks, customers) {
     localStorage['orders'] = JSON.stringify(orders);
     localStorage['drinks'] = JSON.stringify(drinks);
     localStorage['customers'] = JSON.stringify(customers);
 }
 
-
-async function fetchMyData() {
-    // fetch and change to usable objects
-    const fetchedDrinks = await fetch(drinksURL);
-    const jsonifiedDrinks = await fetchedDrinks.json();
-    const fetchedOrders = await fetch(ordersURL);
-    const jsonifiedOrders = await fetchedOrders.json();
-    const fetchedCustomers = await fetch(customersURL);
-    const jsonifiedCustomers = await fetchedCustomers.json();
-
+// Creates front end page
+function createPage(jsonifiedOrders, jsonifiedDrinks, jsonifiedCustomers) {
     // Restructured objects to be {id:object} format
     const ordersByIdObject = ordersById(jsonifiedOrders.results);
     const drinksByIdObject = ordersById(jsonifiedDrinks.results);
     const customersByIdObject = customerById(jsonifiedCustomers.results);
-
+    
     // Populate Orders Container sidebar
     const OrdersArray = buildOrdersArray(ordersByIdObject);
     fillOrdersContainer(OrdersArray, ordersByIdObject, customersByIdObject);
-
+    
     // Add event listener for clicking on orders
     orderContainer.addEventListener('click', event => populateOrderDetails(event, ordersByIdObject, drinksByIdObject, customersByIdObject));
+}
 
-    // Store fetched data into local storage
-    storeLocalStorage(jsonifiedOrders.results, jsonifiedDrinks.results, jsonifiedCustomers.results);
+async function fetchMyData() {
+    
+    let jsonifiedDrinks;
+    let jsonifiedOrders;
+    let jsonifiedCustomers;
+    
+    // Fetch if there is no local storage
+    if(!localStorage.getItem('orders') 
+    || !localStorage.getItem('orders') 
+    || !localStorage.getItem('orders')) {
+        // fetch and change to usable objects
+        const fetchedDrinks = await fetch(drinksURL);
+        jsonifiedDrinks = await fetchedDrinks.json();
+        const fetchedOrders = await fetch(ordersURL);
+        jsonifiedOrders = await fetchedOrders.json();
+        const fetchedCustomers = await fetch(customersURL);
+        jsonifiedCustomers = await fetchedCustomers.json();
+
+        // Store fetched data into local storage
+        storeLocalStorage(jsonifiedOrders, jsonifiedDrinks, jsonifiedCustomers);
+
+    
+    } else { // Pull from local storage
+        jsonifiedOrders = await JSON.parse(localStorage.getItem('orders'));
+        jsonifiedDrinks = await JSON.parse(localStorage.getItem('drinks'));
+        jsonifiedCustomers = await JSON.parse(localStorage.getItem('customers'));
+    }
+    
+    // Create page
+    createPage(jsonifiedOrders, jsonifiedDrinks, jsonifiedCustomers);
 }
 
 fetchMyData();
