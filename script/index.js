@@ -16,21 +16,21 @@ customersURL = 'http://my-little-cors-proxy.herokuapp.com/https://meanmom.jonath
 // Restructured orders to be {order.id:object} format
 function ordersById(jsonOrders) {
     const orderIdObject = {};
-    jsonOrders.results.forEach(order => orderIdObject[order.id] = order);
+    jsonOrders.forEach(order => orderIdObject[order.id] = order);
     return orderIdObject;
 }
 
 // Restructured customers to be {customer.id:object} format
 function customerById(jsonCustomers) {
     const customerIdObject = {};
-    jsonCustomers.results.forEach(cust => customerIdObject[cust.id]=cust);
+    jsonCustomers.forEach(cust => customerIdObject[cust.id]=cust);
     return customerIdObject;
 }
 
 // Restructured drinks to be {drink.id:object} format
 function drinksById(jsonDrinks) {
     const drinkIdObject = {};
-    jsonDrinks.results.forEach(drink => drinkIdObject[cust.id]=drink);
+    jsonDrinks.forEach(drink => drinkIdObject[cust.id]=drink);
     return drinkIdObject;
 }
 
@@ -65,12 +65,9 @@ function populateOrderDetails(event, orders, drinks, customers) {
     const customer = customers[customerID];
     const drinkID = order.drink_id;
     const drink = drinks[drinkID]
-    // console.log(customerID);
-
 
     // Create a containing div for the order
     const section = document.createElement('section');
-    // section.classList.add('test');  
     orderDetailsContainer.appendChild(section);
 
     // Create Order Header
@@ -86,14 +83,20 @@ function populateOrderDetails(event, orders, drinks, customers) {
         `
         <h2 class='order-details-h2'><strong>Order: </strong></h2><br>
         <p class='details-text'><strong>Order Time: </strong>${order.date}<br>
-        <strong>Drink: </strong>${drink.recipe}<br>
-        <strong>Size: </strong>${order.size}<br></p><br><br>
+        <strong>Size: </strong>${order.size}<br>
+        <strong>Drink: </strong>${drink.recipe}<br></p><br><br>
         <h2 class='order-details-h2'><strong>Customer: </strong></h2><br>
         <p class='details-text'><strong>Name: </strong>${customer.name}<br>
         <strong>Email: </strong>${customer.email}<br>
         <strong>Twitter: </strong>${customer.twitter}<br></p>
         `;
     section.append(details);
+}
+
+function storeLocalStorage(orders, drinks, customers) {
+    localStorage['orders'] = JSON.stringify(orders);
+    localStorage['drinks'] = JSON.stringify(drinks);
+    localStorage['customers'] = JSON.stringify(customers);
 }
 
 
@@ -105,12 +108,11 @@ async function fetchMyData() {
     const jsonifiedOrders = await fetchedOrders.json();
     const fetchedCustomers = await fetch(customersURL);
     const jsonifiedCustomers = await fetchedCustomers.json();
-    // console.log(jsonifiedDrinks);
 
     // Restructured objects to be {id:object} format
-    const ordersByIdObject = ordersById(jsonifiedOrders);
-    const drinksByIdObject = ordersById(jsonifiedDrinks);
-    const customersByIdObject = customerById(jsonifiedCustomers);
+    const ordersByIdObject = ordersById(jsonifiedOrders.results);
+    const drinksByIdObject = ordersById(jsonifiedDrinks.results);
+    const customersByIdObject = customerById(jsonifiedCustomers.results);
 
     // Populate Orders Container sidebar
     const OrdersArray = buildOrdersArray(ordersByIdObject);
@@ -118,6 +120,9 @@ async function fetchMyData() {
 
     // Add event listener for clicking on orders
     orderContainer.addEventListener('click', event => populateOrderDetails(event, ordersByIdObject, drinksByIdObject, customersByIdObject));
+
+    // Store fetched data into local storage
+    storeLocalStorage(jsonifiedOrders.results, jsonifiedDrinks.results, jsonifiedCustomers.results);
 }
 
 fetchMyData();
