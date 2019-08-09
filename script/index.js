@@ -68,6 +68,7 @@ function populateOrderDetails(event, orders, drinks, customers) {
 
     // Create a containing div for the order
     const section = document.createElement('section');
+    section.classList.add('order-details-container')
     orderDetailsContainer.appendChild(section);
 
     // Create Order Header
@@ -91,6 +92,8 @@ function populateOrderDetails(event, orders, drinks, customers) {
         <strong>Twitter: </strong>${customer.twitter}<br></p>
         `;
     section.append(details);
+
+    location.href='#';
 }
 
 // Store into local storage
@@ -123,8 +126,8 @@ async function fetchMyData() {
     
     // Fetch if there is no local storage
     if(!localStorage.getItem('orders') 
-    || !localStorage.getItem('orders') 
-    || !localStorage.getItem('orders')) {
+    || !localStorage.getItem('drinks') 
+    || !localStorage.getItem('customers')) {
         // fetch and change to usable objects
         const fetchedDrinks = await fetch(drinksURL);
         jsonifiedDrinks = await fetchedDrinks.json();
@@ -148,4 +151,3 @@ async function fetchMyData() {
 }
 
 fetchMyData();
-
